@@ -108,21 +108,29 @@ class bst:
                 return None
             
             # only leftchild
-            if not d_node.rightchild and d_leftchild:
+            if not d_node.rightchild and d_node.leftchild:
                 tempNode = d_node.leftchild
                 del d_node
                 return tempNode
             
             # only rightchild
-            if d_node.rightchild and not d_leftchild:
+            if d_node.rightchild and not d_node.leftchild:
                 tempNode = d_node.rightchild
                 del d_node
                 return tempNode
             
             # Both childeren
-            tempNode = self.getPredessor(d_node.left)
-            node.data = tempNode.data
+            tempNode = self.getPredessor(d_node.leftchild)
+            d_node.data = tempNode.data
             d_node.leftchild = self.deleteNode(tempNode.data,d_node.leftchild)
+            
+            return d_node
+        
+    def getPredessor(self,p_node):
+        if  p_node.rightchild:
+            return self.getPredessor(p_node.rightchild)
+        
+        return p_node
             
             
             
@@ -136,15 +144,17 @@ bstree = bst()
 bstree.insert(10)
 bstree.insert(5)
 bstree.insert(15)
-bstree.insert(6)
-bstree.insert(4)
-bstree.insert(7)
+#bstree.insert(6)
+#bstree.insert(4)
+#bstree.insert(7)
 #print(bstree.getMinValue())
 #print(bstree.getMaxValue())
 #bstree.inorderTraversal()
 #bstree.preorderTraversal()
 bstree.postorderTraversal()
-bstree.delete(6)
+bstree.delete(10)
+print("------------------------")
+bstree.postorderTraversal()
 
 
         

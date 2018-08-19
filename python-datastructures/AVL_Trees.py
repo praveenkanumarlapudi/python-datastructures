@@ -102,7 +102,63 @@ class AVL:
             return self.rotateLeft(node)
         return node
     
+    def delete(self, data):
+        if self.root:
+            self.root = self.deleteNode(self.root, data)
     
+    def deleteNode(node, data):
+        if not node:
+            return node
+        
+        if data > node.data: # Traverse Right sub Tree
+            node.right = self.deleteNode(node.right, data)
+        if data < node.data: # Traverse Right sub Tree
+            node.left = self.deleteNode(node.left, data)
+        else:
+            if not node.left and not node.right: # Leaf node
+                del node
+                return None
+            if not node.left and node.right: # Node has one right child
+                tempNode = node.right
+                return tempNode
+            if not node.right and node.left: # Node has one left child
+                tempNode = node.left
+                return tempNode
+            
+            # In case both children are present get the predessor and get rd of it
+            tempNode = self.getPredessor(node.left) # Predessor is always Right most node of left sub-tree
+            #node.data = tempNode.data
+            tempNode.right = node.right
+            tempNode.left = self.deleteNode(tempNode.left, tempNode.data) #remove the right most node of left sub tree since it made predecessor
+            # At this point both tempNode and node are pointing to same reference.
+            
+            if not tempNode:
+                return tempNode
+            
+            tempNode.height = max(self.calcHeight(tempNode.left),self.calcHeight(tempNode.right)) + 1 # caculate balance of the new node
+            balance = self.checkIfBalanced(tempNode) # check the balance of the new node
+            
+            if balance > 1: and self.checkIfBalanced(tempNode.left) >= 0: # left heavy
+                return self.rotateRight(tempNode)
+            if balance < -1: and self.checkIfBalanced(tempNode.right) <= 0: # right heavy
+                return self.rotateLeft(tempNode)
+            if balance > 1 and self.checkIfBalanced(tempNode.left) < 0:
+                tempNode.left = self.rotateLeft(tempNode.left)
+                return self.rotateRight(tempNode)
+            if balance < -1 and self.checkIfBalanced(tempNode.right) > 0:
+                node.right = self.rotateRight(tempNode.right)
+                return self.rotateLeft(tempNode)
+            
+            return tempNode
+        
+        def getPredecessor(node):
+            if node.right:
+                return self.getPredecessor(node.right)
+            return node
+            
+            
+            
+        
         
         
          
